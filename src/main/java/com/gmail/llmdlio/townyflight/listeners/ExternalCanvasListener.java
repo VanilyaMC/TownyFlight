@@ -2,8 +2,10 @@ package com.gmail.llmdlio.townyflight.listeners;
 
 import io.canvasmc.canvas.event.EntityPostPortalAsyncEvent;
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent;
+import io.canvasmc.canvas.event.PlayerPostRespawnAsyncEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -35,5 +37,12 @@ public class ExternalCanvasListener implements Listener {
             }
             delegate.handlePlayerTeleportation(cause, player, player.getLocation());
         }
+    }
+
+    // Canvas keeps the same player entity through a respawn, so flight survives death unless it is removed here.
+    // The post event runs once the player stands at the respawn location.
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerRespawn(PlayerPostRespawnAsyncEvent event) {
+        delegate.handlePlayerRespawn(event.getPlayer());
     }
 }

@@ -32,6 +32,19 @@ public class PlayerTeleportListener implements Listener {
 		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
 	}
 
+	/**
+	 * Removes flight from a player who respawned somewhere they may not fly.
+	 */
+	public void handlePlayerRespawn(Player player) {
+		if (player.hasPermission("townyflight.bypass")
+				|| !player.getAllowFlight()
+				|| flightAllowedDestination(player, player.getLocation())) {
+			return;
+		}
+
+		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+	}
+
 	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
 		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
 				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT; // TODO: change over when 1.21.4 and older support is dropped.
