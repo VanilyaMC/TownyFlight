@@ -1,5 +1,6 @@
 package com.gmail.llmdlio.townyflight.tasks;
 
+import com.gmail.llmdlio.townyflight.TownyFlight;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -126,8 +127,9 @@ public class TempFlightTask implements Runnable {
 	private void removeFlight(UUID uuid) {
 		playerUUIDSecondsMap.remove(uuid);
 		Player player = Bukkit.getPlayer(uuid);
+		// This task runs async on Folia/Canvas: change the player's flight on the player's own thread.
 		if (player != null && player.isOnline())
-			TownyFlightAPI.getInstance().removeFlight(player, false, true, "time");
+			TownyFlight.getPlugin().getScheduler().run(player, () -> TownyFlightAPI.getInstance().removeFlight(player, false, true, "time"));
 		MetaData.removeFlightMeta(uuid);
 	}
 

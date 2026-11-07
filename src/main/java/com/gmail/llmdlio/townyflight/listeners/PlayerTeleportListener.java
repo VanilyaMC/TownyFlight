@@ -47,7 +47,8 @@ public class PlayerTeleportListener implements Listener {
 
 	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
 		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
-				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT; // TODO: change over when 1.21.4 and older support is dropped.
+				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT // TODO: change over when 1.21.4 and older support is dropped.
+				|| teleportCause == TeleportCause.CONSUMABLE_EFFECT; // Chorus fruit on 1.21.5 and newer (26.x).
 	}
 
 	private boolean flightAllowedDestination(Player player, Location loc) {

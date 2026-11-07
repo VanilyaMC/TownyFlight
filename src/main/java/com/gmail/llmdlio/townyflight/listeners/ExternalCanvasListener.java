@@ -1,7 +1,7 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
 import io.canvasmc.canvas.event.EntityPostPortalAsyncEvent;
-import io.canvasmc.canvas.event.EntityTeleportAsyncEvent;
+import io.canvasmc.canvas.event.EntityPostTeleportAsyncEvent;
 import io.canvasmc.canvas.event.PlayerPostRespawnAsyncEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,8 +17,11 @@ public class ExternalCanvasListener implements Listener {
         this.delegate = delegate;
     }
 
-    @EventHandler
-    public void playerTeleport(EntityTeleportAsyncEvent event) {
+    // Use the post event: Canvas rejects a teleport whose entity state changed inside the pre event,
+    // and removing flight changes the player's abilities. The post event runs on the player's thread
+    // once they stand at the destination.
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerTeleport(EntityPostTeleportAsyncEvent event) {
         if (event.getEntity() instanceof Player player) {
             delegate.handlePlayerTeleportation(event.getCause(), player, event.getTo());
         }

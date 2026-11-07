@@ -241,15 +241,18 @@ public class TownyFlightAPI {
 	 * a town has their free flight disabled.
 	 */
 	public void takeFlightFromPlayersInTown(Town town) {
+		// Called from the mayor's command thread: each player is checked and changed on their own region thread.
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-			if (player.hasPermission("townyflight.bypass")
-				|| !player.getAllowFlight()
-				|| TownyAPI.getInstance().isWilderness(player.getLocation())
-				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
-				|| TownyFlightAPI.getInstance().canFly(player, true))
-				continue;
+			plugin.getScheduler().run(player, () -> {
+				if (player.hasPermission("townyflight.bypass")
+					|| !player.getAllowFlight()
+					|| TownyAPI.getInstance().isWilderness(player.getLocation())
+					|| !town.equals(TownyAPI.getInstance().getTown(player.getLocation()))
+					|| TownyFlightAPI.getInstance().canFly(player, true))
+					return;
 
-			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+				TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+			});
 		}	
 	}
 
